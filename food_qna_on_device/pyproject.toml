@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "food-qna-on-device"
+version = "0.1.0"
+description = ""
+authors = ["han-yu2 <han_yu2@apple.com>"]
+readme = "README.md"
+packages = [{include = "food_qna_on_device", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
