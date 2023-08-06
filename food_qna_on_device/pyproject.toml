@@ -2,12 +2,12 @@
 name = "food-qna-on-device"
 version = "0.1.0"
 description = ""
-authors = ["Han Yu <bearbearyu1223@gmail.com>"]
+authors = ["bearbearyu1223 <bearbearyu@gmail.com>"]
 readme = "README.md"
-packages = [{include = "food_qna_on_device", from = "src"}]
+packages = [{include = "food_qna_on_device"}]
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.9.7 || >3.9.7,<4.0"
+python = "^3.9"
 ctransformers = "^0.2.5"
 faiss-cpu = "1.7.4"
 fastapi = "^0.96.0"
@@ -18,18 +18,8 @@ python-box = "7.0.1"
 python-dotenv = "1.0.0"
 sentence-transformers = "2.2.2"
 uvicorn = "^0.22.0"
-numpy="1.24.2"
-openai="0.27.1"
-pandas="1.5.3"
-redis="4.5.1"
-requests="2.28.2"
-streamlit="1.25.0"
-streamlit_chat="0.0.2.2"
-termcolor="2.2.0"
-textract="1.6.5"
-tiktoken="0.4.0" 
-jupyter="1.0.0"
-PyPDF2="3.0.1"
+torch = ">=2.0.0, !=2.0.1"
+
 
 [build-system]
 requires = ["poetry-core"]
