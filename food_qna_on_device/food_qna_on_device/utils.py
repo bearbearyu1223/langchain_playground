@@ -28,7 +28,8 @@ def _load_on_device_llm():
                         model_type=MODEL_TYPE, 
                         config={
                             'max_new_tokens': MAX_NEW_TOKENS, 
-                            'temperature': TEMPERATURE
+                            'temperature': TEMPERATURE,
+                            'gpu_layers': 32,
                         }
     )
     return llm
@@ -44,7 +45,7 @@ def _set_up_retrieval_qa(llm, prompt, vector_db):
 
 def set_up_on_device_qa(): 
     embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME,
-                                       model_kwargs={'device': 'cpu'})
+                                       model_kwargs={'device': 'gpu'})
     db_dir = os.path.join(os.getcwd(),VECTOR_DB_PATH)
     vector_db = FAISS.load_local(db_dir, embeddings)
     llm = _load_on_device_llm()
