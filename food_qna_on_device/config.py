@@ -1,11 +1,12 @@
 RETURN_SOURCE_DOCUMENTS = "True"
-TOP_K = 1
-CHUNK_SIZE = 500
-CHUNK_OVERLAP = 50
+TOP_K = 2
+CHUNK_SIZE = 2000
+CHUNK_OVERLAP = 0
 DATA_PATH = 'cook_book_data'
 VECTOR_DB_PATH = 'vector_db'
 MODEL_TYPE = 'llama'
 MODEL_BIN_PATH = 'models/llama-2-7b-chat.ggmlv3.q8_0.bin' # download from: https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML
+#MODEL_BIN_PATH = 'models/llama-2-13b-chat.ggmlv3.q8_0.bin' # download from: https://huggingface.co/TheBloke/Llama-2-13B-chat-GGML
 EMBEDDING_MODEL_NAME = 'sentence-transformers/all-MiniLM-L6-v2'
-MAX_NEW_TOKENS = 256 
-TEMPERATURE = 0.01
+MAX_NEW_TOKENS = 256
+TEMPERATURE = 0.1

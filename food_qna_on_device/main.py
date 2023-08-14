@@ -1,17 +1,17 @@
 
 from build_knowledge_base import build_vector_db
-from config import RETURN_SOURCE_DOCUMENTS, TOP_K
-from food_qna_on_device.utils import _load_on_device_llm
+from config import MODEL_BIN_PATH, MODEL_TYPE, MAX_NEW_TOKENS, TEMPERATURE, TOP_K, RETURN_SOURCE_DOCUMENTS
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
+from langchain.llms import CTransformers
+from langchain.chat_models import ChatOpenAI
 import os
 import timeit
-import sys
 
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-prompt_template = """Use the retrieved context to answer the question in a fewer sentences. If you don't know the answer, just say that you don't know.
+prompt_template = """Use the retrieved content to answer the question. If you cannot find answers, just say that you don't know.
 
 Context: {context}
 Question: {question}
@@ -23,6 +23,18 @@ PROMPT = PromptTemplate(
     template=prompt_template, input_variables=["context", "question"]
 )
 
+def _load_on_device_llm():
+    model_dir = os.path.join(os.getcwd(),MODEL_BIN_PATH)
+    llm = CTransformers(model=model_dir, 
+                        model_type=MODEL_TYPE, 
+                        config={
+                            'max_new_tokens': MAX_NEW_TOKENS, 
+                            'temperature': TEMPERATURE,
+                            'gpu_layers': 32,
+                            'stream': True,
+                        }
+    )
+    return llm
 
 
 if __name__ == "__main__": 
@@ -31,7 +43,8 @@ if __name__ == "__main__":
     end = timeit.default_timer()
     print('='*60)
     print("Time to build the VectorDB: {}".format(end - start))
-    llm = _load_on_device_llm()
+    # llm = _load_on_device_llm()
+    llm=ChatOpenAI(temperature=TEMPERATURE)
     while True:
         try:
             query = input('Enter a query related to food preparation and cooking: ')
