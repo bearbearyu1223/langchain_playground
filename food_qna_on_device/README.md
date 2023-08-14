@@ -60,11 +60,11 @@ Instruction to run the example project:
 poetry install
 ~~~
 * Step 2: Download the quantized 7b model `llama-2-7b-chat.ggmlv3.q8_0.bin` from https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML and save the model under the directory ``models\`` 
-* Step 3: To start parsing user queries into the application, run the following command from the project directory (note: the mode inference can take ~1 mins per input query)
+* Step 3: To start parsing user queries into the application, run the following command from the project directory (note: the model inference can take ~1 mins per input query)
 ~~~
 poetry run python main.py -c local 
 ~~~ 
-Optionally, to run the same query with OpenAI (note: the mode inference will take a few seconds per input query)
+Optionally, to run the same query with OpenAI (note: the model inference will take a few seconds per input query)
 ~~~
 poetry run python main.py -c server
 ~~~ 
