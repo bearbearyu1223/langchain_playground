@@ -1,5 +1,4 @@
 ## On-Device QnA with LangChain and Llama2
-------------
 ### Introduction 
 Third-party commercial large language model (LLM) providers, such as OpenAI's GPT-4, Google Bard, and Amazon AlexaTM, have greatly democratized access to LLM capabilities through seamless API integration and scalable model inference hosting in the cloud. These advanced LLMs possess the remarkable ability to **comprehend**, **learn from**, and **produce text** that is nearly indistinguishable from human-generated content. Beyond their text generation prowess, these LLMs excel in **interactive conversations**, **question answering**, **dialogue** and **document summarization**, as well as **offering insightful recommendations**. Their versatility finds applications across diverse tasks and industries including creative copywriting for marketing, precise document summarization for legal purposes, data-driven market research in the financial sector, realistic simulation of clinical trials within healthcare, and even code generation for software development.
 
@@ -21,27 +20,47 @@ Llama 2 is offered in an array of parameter sizes — 7B, 13B, and 70B — along
 [C Transformers](https://github.com/marella/ctransformers) is a wrapper that provides the Python bindings for the Transformer models implemented in C/C++ using GGML. 
 C Transformers supports running Llama2 model inference via GPU, for both NVIDIA GPU (via CUDA, a programming language for NVIDIA GPUs) and Apple's own integreated GPU and Neural Engine (via Metal, a programming language for Apple integrated GPUs).
 
-> Note: To enable Metal Support for model inference running on Apple M1/M2 chip, run the following cmd under your project root
-> ~~~
-> poetry config --local installer.no-binary ctransformers
+> Note: To enable Metal Support for model inference running on Apple M1/M2 chip, need run the following cmd under your project root
+~~~
+poetry config --local installer.no-binary ctransformers
 
-> poetry add ctransformers 
-> ~~~
+poetry add ctransformers 
+~~~
 
 ### Retrieval Augmented Generation
 Retrieval Augmented Generation (RAG) represents a technique wherein data is retrieved from external sources to enhance and expand the prompts used in model generation. This method is not only a cost-effective alternative but also proves to be an efficient approach in comparison to the traditional methods of pre-training or fine-tuning foundation models.
 See the previous post at [Food QnA Chatbot : Help Answer Food Related Questions from Your Own Cookbook](https://bearbearyu1223.github.io/chatbot/2023/07/31/food-qna-on-server-llm.html) as a brief into to RAG. 
 
 ### An Example Project 
-The source code for the example project can be find on [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/bearbearyu1223/langchain_playground/tree/main/food_qna_on_device). 
+The source code for the example project can be find on [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/bearbearyu1223/langchain_playground/tree/main/food_qna_on_device). The project directory should look like below:
+```
+food_qna_on_device
+├── README.md
+├── build_knowledge_base.py
+├── config.py
+├── cook_book_data
+│   ├── GCE-Dinner-in-30-EXPANDED-BLAD.pdf
+│   ├── Quick-Easy-Weeknight-Meals-1.pdf
+│   └── dinners_cookbook_508-compliant.pdf
+├── main.py
+├── models
+│   ├── llama-2-13b-chat.ggmlv3.q8_0.bin
+│   └── llama-2-7b-chat.ggmlv3.q8_0.bin
+├── poetry.lock
+├── poetry.toml
+├── pyproject.toml
+└── vector_db
+    ├── index.faiss
+    └── index.pkl
+```
 
 Instruction to run the example project:
-* Step 1: Install and resolve the dependencies as defined in `pyproject.toml` file via
+* Step 1: Launch the terminal from the project directory, install and resolve the dependencies as defined in `pyproject.toml` file via
 ~~~
 poetry install
 ~~~
 * Step 2: Download the quantized 7b model `llama-2-7b-chat.ggmlv3.q8_0.bin` from https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML and save the model under the directory ``models\`` 
-* Step 3: To start parsing user queries into the application, launch the terminal from the project directory and run the following command (note: the mode inference can take ~1 mins per input query)
+* Step 3: To start parsing user queries into the application, run the following command from the project directory (note: the mode inference can take ~1 mins per input query)
 ~~~
 poetry run python main.py -c local 
 ~~~ 
@@ -50,3 +69,8 @@ Optionally, to run the same query with OpenAI (note: the mode inference will tak
 poetry run python main.py -c server
 ~~~ 
 * Step 4: Enter a query related to food preparation and cooking into the console and start playing with it. 
+See an example below:
+Screenshot of the original content for making "Pumpkin Biscuits". 
+ ![Original Content](assets/original.png)
+Retrieval Augmented Generation by running Llama2 model inference on local device
+ ![QnA](assets/response.png)

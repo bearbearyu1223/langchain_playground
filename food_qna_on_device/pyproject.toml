@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["bearbearyu1223 <bearbearyu@gmail.com>"]
 readme = "README.md"
-packages = [{include = "food_qna_on_device"}]
 
 [tool.poetry.dependencies]
 python = "^3.9"

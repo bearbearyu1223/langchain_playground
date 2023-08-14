@@ -76,11 +76,11 @@ if __name__ == "__main__":
             print("Time to produce response: {}".format(end - start))
             print("Answer:{}".format(response["result"]))
             print('='*60)
-            source_docs = response['source_documents']
-            for i, doc in enumerate(source_docs):
-                print("Source Document: {}".format(i+1))
-                print("Source Text: {}".format(doc.page_content))
-                print('='* 60)
+            # source_docs = response['source_documents']
+            # for i, doc in enumerate(source_docs):
+            #     print("Source Document: {}".format(i+1))
+            #     print("Source Text: {}".format(doc.page_content))
+            #     print('='* 60)
         except KeyboardInterrupt:  # Ctrl + C - will exit program immediately if not caught
             break
     print()
