@@ -13,7 +13,7 @@ In this post, our focus lies in exploring the execution of quantized variants of
 Llama 2 is offered in an array of parameter sizes — 7B, 13B, and 70B — alongside both pretrained and fine-tuned variations to cater to a wide range of application needs.
 
 ### Framework and Libraries Used: LangChain, GGML, C Transformers 
-[LangChain]{https://python.langchain.com/docs/get_started/introduction.html} is an open source framework for developing applications powered by LLMs. It goes beyond standard API calls by being *data-aware*, enabling connections with various data sources for richer, personalized experiences. It is also *agentic*, meaning it can empower a language model to interact dynamically with its environment. LangChain streamlines the development of diverse applications, such as chatbots, Generative Question and Answering (GQA), and summarization. By “chaining” components from multiple modules, it allows for the creation of unique applications built around an LLM with **easy-to-code** and **fast-to-production** developer experience. 
+[LangChain](https://python.langchain.com/docs/get_started/introduction.html) is an open source framework for developing applications powered by LLMs. It goes beyond standard API calls by being *data-aware*, enabling connections with various data sources for richer, personalized experiences. It is also *agentic*, meaning it can empower a language model to interact dynamically with its environment. LangChain streamlines the development of diverse applications, such as chatbots, Generative Question and Answering (GQA), and summarization. By “chaining” components from multiple modules, it allows for the creation of unique applications built around an LLM with **easy-to-code** and **fast-to-production** developer experience. 
 
 
 [GGML](https://github.com/ggerganov/ggml) is a C library for machine learning (ML). GGML makes use of a technique called **"quantization"** (e.g., convert LLM's weights from high-precison floating numbers to low-precision floating numbers) that allows for large language models to run on consumer hardware. GGML supports a number of different quantization strategies (e.g. 4-bit, 5-bit, and 8-bit quantization), each of which offers different *trade-offs between efficiency and performance*. More information about these trade-offs (such as model disk size and inference speed) can be found in [the documentation for llama.cpp](https://github.com/ggerganov/llama.cpp). 
@@ -21,12 +21,12 @@ Llama 2 is offered in an array of parameter sizes — 7B, 13B, and 70B — along
 [C Transformers](https://github.com/marella/ctransformers) is a wrapper that provides the Python bindings for the Transformer models implemented in C/C++ using GGML. 
 C Transformers supports running Llama2 model inference via GPU, for both NVIDIA GPU (via CUDA, a programming language for NVIDIA GPUs) and Apple's own integreated GPU and Neural Engine (via Metal, a programming language for Apple integrated GPUs).
 
-To enable Metal Support for model inference running on Apple M1/M2 chip, run the following cmd under your project root
-~~~
-poetry config --local installer.no-binary ctransformers
+> Note: To enable Metal Support for model inference running on Apple M1/M2 chip, run the following cmd under your project root
+> ~~~
+> poetry config --local installer.no-binary ctransformers
 
-poetry add ctransformers 
-~~~
+> poetry add ctransformers 
+> ~~~
 
 ### Retrieval Augmented Generation
 Retrieval Augmented Generation (RAG) represents a technique wherein data is retrieved from external sources to enhance and expand the prompts used in model generation. This method is not only a cost-effective alternative but also proves to be an efficient approach in comparison to the traditional methods of pre-training or fine-tuning foundation models.
@@ -40,8 +40,13 @@ Instruction to run the example project:
 ~~~
 poetry install
 ~~~
-* Step 2: Run `main.py` via 
+* Step 2: Download the quantized 7b model `llama-2-7b-chat.ggmlv3.q8_0.bin` from https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML and save the model under the directory ``models\`` 
+* Step 3: To start parsing user queries into the application, launch the terminal from the project directory and run the following command (note: the mode inference can take ~1 mins per input query)
 ~~~
-poetry run python main.py
+poetry run python main.py -c local 
 ~~~ 
-* Step 3: Enter a query related to food preparation and cooking into the console and start playing with it. 
+Optionally, to run the same query with OpenAI (note: the mode inference will take a few seconds per input query)
+~~~
+poetry run python main.py -c server
+~~~ 
+* Step 4: Enter a query related to food preparation and cooking into the console and start playing with it. 

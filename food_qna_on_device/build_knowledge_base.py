@@ -6,19 +6,24 @@ from langchain.embeddings import HuggingFaceEmbeddings
 
 def build_vector_db():
     loader = DirectoryLoader(DATA_PATH, glob='*.pdf', loader_cls=PyPDFLoader)
-    documents = loader.load()
+    raw_documents = loader.load()
+    texts = []
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=CHUNK_SIZE,
                                                    chunk_overlap=CHUNK_OVERLAP)
-    texts = text_splitter.split_documents(documents)
+    chuncked_documents = text_splitter.split_documents(raw_documents)
+    for document in chuncked_documents:
+        texts.append(document.page_content)
     embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL_NAME,
                                        model_kwargs={'device': 'cpu'})
-    vector_db = FAISS.from_documents(texts, embeddings)
+    vector_db = FAISS.from_texts(texts, embeddings)
     vector_db.save_local(VECTOR_DB_PATH)
     print("Total number of Indexed Document: {}".format(vector_db.index.ntotal))
     return vector_db
 
 if __name__ == '__main__':
     vector_db = build_vector_db()
-    query = "How to make creamy squash soup?"
+    query = "How to make GROUND BEEF STROGANOFF?"
     search_results = vector_db.similarity_search_with_relevance_scores(query)
-    print("Semantic Search Results: {}".format(search_results[0]))
+    for result in search_results:
+        print('='* 60)
+        print("Semantic Search Results with score {}\n: {}".format(result[1], result[0].page_content))

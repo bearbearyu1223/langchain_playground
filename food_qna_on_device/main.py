@@ -1,11 +1,12 @@
 
 from build_knowledge_base import build_vector_db
-from config import MODEL_BIN_PATH, MODEL_TYPE, MAX_NEW_TOKENS, TEMPERATURE, TOP_K, RETURN_SOURCE_DOCUMENTS
+from config import MODEL_BIN_PATH, MODEL_TYPE, MAX_NEW_TOKENS, GPU_LAYERS, CONTEXT_LENGTH,  TEMPERATURE, TOP_K, RETURN_SOURCE_DOCUMENTS
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from langchain.llms import CTransformers
 from langchain.chat_models import ChatOpenAI
 import os
+import argparse
 import timeit
 
 
@@ -29,8 +30,9 @@ def _load_on_device_llm():
                         model_type=MODEL_TYPE, 
                         config={
                             'max_new_tokens': MAX_NEW_TOKENS, 
+                            'context_length': CONTEXT_LENGTH, 
                             'temperature': TEMPERATURE,
-                            'gpu_layers': 32,
+                            'gpu_layers': GPU_LAYERS,
                             'stream': True,
                         }
     )
@@ -38,13 +40,29 @@ def _load_on_device_llm():
 
 
 if __name__ == "__main__": 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("config",
+                        type=str,
+                        help="config to set running model inference on device or on server ",
+                        choices=["local", "server"],
+                        nargs="?", 
+                        default="server")
+    parser.add_argument('-c', '--config', action='store_true', dest="config")
+    args = parser.parse_args()
     start = timeit.default_timer()
     vector_db = build_vector_db()
     end = timeit.default_timer()
     print('='*60)
     print("Time to build the VectorDB: {}".format(end - start))
-    # llm = _load_on_device_llm()
-    llm=ChatOpenAI(temperature=TEMPERATURE)
+
+    if args.config.lower() == 'local': 
+        print('='*60)
+        print('Set model inference to run on local device ...')
+        llm = _load_on_device_llm()
+    else:
+        print('Set model inference to run on server with OpenAI ...')
+        llm=ChatOpenAI(temperature=TEMPERATURE)
+        
     while True:
         try:
             query = input('Enter a query related to food preparation and cooking: ')
@@ -62,8 +80,6 @@ if __name__ == "__main__":
             for i, doc in enumerate(source_docs):
                 print("Source Document: {}".format(i+1))
                 print("Source Text: {}".format(doc.page_content))
-                print("Document Name: {}".format(doc.metadata["source"]))
-                print("Page Number: {}".format(doc.metadata["page"]))
                 print('='* 60)
         except KeyboardInterrupt:  # Ctrl + C - will exit program immediately if not caught
             break
